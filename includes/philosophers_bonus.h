@@ -1,0 +1,5 @@
+#ifndef PHILOSOPHERS_BONUS_H
+
+# define PHILOSOPHERS_BONUS_H
+
+#endif
