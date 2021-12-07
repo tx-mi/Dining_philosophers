@@ -18,16 +18,34 @@ static int	check_arguments(int argc)
 	return(0);
 }
 
+void	run_threads(t_data *data)
+{
+	pthread_t	*threads;
+	int			philos_nbr;
+
+	philos_nbr = data->nbr_philos;
+	threads = (pthread_t *)malloc(sizeof(pthread_t) * philos_nbr);
+	while(philos_nbr--)
+		pthread_create(&threads[philos_nbr], NULL, processing,
+					(void *)&data->philosophers[philos_nbr]);
+	data->tids = threads;
+}
+
+void	*processing(void *data)
+{
+	(void)data;
+	return (NULL);
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	*data;
-	(void)argv;
 
+	data = NULL;
 	if (check_arguments(argc))
 		return (1);
-	// init data
-	// init forks/mutexes
-	// init philosophers
-	// init threads
-	// process
+	init_data(data, argc, argv);
+	init_forks(data);
+	init_philosophers(data);
+	run_threads(data);
 }

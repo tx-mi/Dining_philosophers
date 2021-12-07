@@ -16,12 +16,12 @@ SRCS = $(addprefix $(SRC_DIRECTORY), $(SRC_LIST))
 
 # Objects
 OBJECTS_DIRECTORY = objects/
-OBJECTS_LIST = $(patsubst %.c, %.o, $(SOURCES_LIST))
+OBJECTS_LIST = $(patsubst %.c, %.o, $(SRC_LIST))
 OBJECTS	= $(addprefix $(OBJECTS_DIRECTORY), $(OBJECTS_LIST))
 
 # Utils
 CC = gcc
-FLAGS = -Wall -Wextra -Werror -03
+FLAGS = -Wall -Wextra -Werror
 
 # COLORS
 GREEN = \033[0;32m
@@ -32,7 +32,7 @@ RESET = \033[0m
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS) $(OBJECTS_DIRECTORY) Makefile
+$(NAME): $(OBJECTS_DIRECTORY) $(OBJECTS) Makefile
 	@$(CC) $(FLAGS) $(INCLUDES) $(OBJECTS) -o $(NAME)
 	@echo "\n$(NAME): $(GREEN)object files were created$(RESET)"
 	@echo "$(NAME): $(GREEN)$(NAME) was created$(RESET)"
@@ -41,8 +41,8 @@ $(OBJECTS_DIRECTORY):
 	@mkdir -p $(OBJECTS_DIRECTORY)
 	@echo "$(NAME): $(GREEN)$(OBJECTS_DIRECTORY) was created$(RESET)"
 
-$(OBJECTS_DIRECTORY)%.o: $(SOURCES_DIRECTORY)%.c $(HEADERS)
-	@$(CC) $(FLAGS) -Imlx -c $(INCLUDES) $< -o $@
+$(OBJECTS_DIRECTORY)%.o: $(SRC_DIRECTORY)%.c $(HEADERS)
+	@$(CC) $(FLAGS) -c $(INCLUDES) $< -o $@
 	@echo "$(GREEN).$(RESET)\c"
 
 clean:
@@ -53,3 +53,5 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@echo "$(NAME): $(RED)$(NAME) was deleted$(RESET)"
+
+re: fclean all

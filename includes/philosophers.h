@@ -11,10 +11,10 @@
 
 typedef struct s_philo
 {
+	int				id;
 	int				nbr_of_meals;  // each time philo eats -> nbr_of_meals++
 	time_t			time_of_last_meal;  // time when philo last eat im ms
 	time_t			limit_of_life;  // when time_of_last_meal > limit_of_life
-	time_t			start_time;
 
 	pthread_mutex_t	*fork1;
 	pthread_mutex_t	*fork2;
@@ -29,7 +29,7 @@ typedef struct s_data
 	int				nbr_of_meals;  // arg5
 
 	pthread_mutex_t	*forks;
-	pthread_t		*tids;  // IDs of philosophers/threads
+	pthread_t		*tids;  // IDs of threads
 
 	t_philo			*philosophers;
 }					t_data;
@@ -39,8 +39,19 @@ typedef struct s_data
 **  init.c
 */
 
+void		run_threads(t_data *data);
+
+void		*processing(void *data);
+
+/*
+**  init.c
+*/
+
 void		init_data(t_data *data, int argc, char **argv);
 
+void		init_forks(t_data *data);
+
+void		init_philosophers(t_data *data);
 
 /*
 **  utils.c
@@ -48,6 +59,9 @@ void		init_data(t_data *data, int argc, char **argv);
 
 void		terminate(const char *error);
 
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
+
+int			ft_isdigit(int c);
 
 /*
 **  ft_atoi.c
