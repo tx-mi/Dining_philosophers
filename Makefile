@@ -9,7 +9,7 @@ HEADERS = $(addprefix $(HEADERS_DIRECTORY), $(HEADERS_LIST))
 # Sources
 SRC_DIRECTORY = ./philo_sources/
 SRC_BONUS_DIRECTORY = ./philo_bonus_sources/
-SRC_LIST = main.c init.c utils.c ft_atoi.c
+SRC_LIST = main.c init.c things.c utils.c ft_atoi.c
 # SRC_BONUS_LIST = main.c init.c utils.c ft_atoi.c
 SRCS = $(addprefix $(SRC_DIRECTORY), $(SRC_LIST))
 # SRCS_BONUS = $(addprefix $(SRC_BONUS_DIRECTORY), $(SRC_BONUS_LIST))

@@ -36,7 +36,7 @@ typedef struct s_data
 
 
 /*
-**  init.c
+**  main.c
 */
 
 void		run_threads(t_data *data);
@@ -52,6 +52,18 @@ void		init_data(t_data *data, int argc, char **argv);
 void		init_forks(t_data *data);
 
 void		init_philosophers(t_data *data);
+
+/*
+**  things.c
+*/
+
+void	take_forks(t_philo *philo);
+
+void	eating(t_philo *philo);
+
+void	thinking(t_philo *philo);
+
+void	sleeping(t_philo *philo);
 
 /*
 **  utils.c
