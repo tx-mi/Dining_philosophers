@@ -16,19 +16,20 @@ static void	choose_fork(t_philo *philo, t_data *data)
 	philo->fork2 = &data->forks[philo->id + 1];
 }
 
-void	init_data(t_data *data, int argc, char **argv)
+t_data	*init_data(int argc, char **argv)
 {
+	t_data *data;
+
 	data = (t_data *)malloc(sizeof(t_data));
-	// if (!data)
-	// 	terminate(ERR_DATA);
 	data->nbr_philos = ft_atoi(argv[1]);
 	if (data->nbr_philos == 0)
-		return ;
+		return NULL;
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 		data->nbr_of_meals = ft_atoi(argv[5]);
+	return (data);
 }
 
 void	init_forks(t_data *data)
@@ -58,6 +59,9 @@ void	init_philosophers(t_data *data)
 	while (i < data->nbr_philos)
 	{
 		philos[i].id = i;
+		philos[i].time_to_die = data->time_to_die;
+		philos[i].time_to_eat = data->time_to_eat;
+		philos[i].time_to_sleep = data->time_to_sleep;
 		philos[i].nbr_of_meals = 0;
 		philos[i].time_of_last_meal = 0;
 		philos[i].limit_of_life = data->time_to_die;

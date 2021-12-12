@@ -12,6 +12,9 @@
 typedef struct s_philo
 {
 	int				id;
+	int				time_to_die;  // arg2
+	int				time_to_eat;  // arg3
+	int				time_to_sleep;  // arg4
 	int				nbr_of_meals;  // each time philo eats -> nbr_of_meals++
 	time_t			time_of_last_meal;  // time when philo last eat im ms
 	time_t			limit_of_life;  // when time_of_last_meal > limit_of_life
@@ -47,7 +50,7 @@ void		*processing(void *data);
 **  init.c
 */
 
-void		init_data(t_data *data, int argc, char **argv);
+t_data		*init_data(int argc, char **argv);
 
 void		init_forks(t_data *data);
 

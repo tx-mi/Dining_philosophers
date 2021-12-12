@@ -33,7 +33,16 @@ void	run_threads(t_data *data)
 
 void	*processing(void *data)
 {
-	(void)data;
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	while (1)
+	{
+		take_forks(philo);
+		eating(philo);
+		sleeping(philo);
+		thinking(philo);
+	}
 	return (NULL);
 }
 
@@ -41,10 +50,11 @@ int	main(int argc, char **argv)
 {
 	t_data	*data;
 
-	data = NULL;
 	if (check_arguments(argc))
 		return (1);
-	init_data(data, argc, argv);
+	data = init_data(argc, argv);
+	if (!data)
+		return (1);
 	init_forks(data);
 	init_philosophers(data);
 	run_threads(data);
