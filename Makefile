@@ -3,13 +3,15 @@ INCLUDES = -I$(HEADERS_DIRECTORY)
 
 # Header files
 HEADERS_DIRECTORY = ./includes/
-HEADERS_LIST = philosophers.h philosophers_bonus.h #errors.h
+HEADERS_LIST = philosophers.h philosophers_bonus.h errors.h
 HEADERS = $(addprefix $(HEADERS_DIRECTORY), $(HEADERS_LIST))
 
 # Sources
 SRC_DIRECTORY = ./philo_sources/
 SRC_BONUS_DIRECTORY = ./philo_bonus_sources/
-SRC_LIST = main.c init.c things.c utils.c ft_atoi.c
+SRC_LIST = events.c finish.c ft_atoi.c init.c main.c \
+			processing.c utils_libft.c utils_philo.c \
+			message.c
 # SRC_BONUS_LIST = main.c init.c utils.c ft_atoi.c
 SRCS = $(addprefix $(SRC_DIRECTORY), $(SRC_LIST))
 # SRCS_BONUS = $(addprefix $(SRC_BONUS_DIRECTORY), $(SRC_BONUS_LIST))
