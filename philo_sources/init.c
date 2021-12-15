@@ -78,9 +78,12 @@ int		init(int argc, char **argv, t_data *data)
 		return (0);
 	if (!init_data(argc, argv, data))
 		return (0);
-	if (data->nbr_philos == 2)
+	if (data->nbr_philos == 1)
 	{
+		printf("0\t 1 has taken a fork\n");
+		ft_usleep(data->time_to_die);
 		printf("%d\t 1 died\n", data->time_to_die + 1);
+		pthread_mutex_destroy(&data->write_mutex);
 		return (0);
 	}
 	if (!init_forks(data))
