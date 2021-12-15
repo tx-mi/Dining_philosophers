@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:46:34 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 21:46:35 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 22:28:50 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	choose_fork(t_philo *philo, t_data *data)
 	{
 		philo->fork1 = &data->forks[(philo->id) % data->nbr_philos];
 		philo->fork2 = &data->forks[philo->id - 1];
-		return	;
+		return ;
 	}
 	philo->fork1 = &data->forks[philo->id - 1];
 	philo->fork2 = &data->forks[philo->id];
@@ -49,7 +49,6 @@ int	init_forks(t_data *data)
 	pthread_mutex_t	*mutexes;
 	int				philos_nbr;
 
-
 	philos_nbr = data->nbr_philos;
 	mutexes = (pthread_mutex_t *)malloc(philos_nbr * sizeof(pthread_mutex_t));
 	if (!mutexes)
@@ -74,7 +73,7 @@ int	init_philosophers(t_data *data)
 		philos[i].id = i + 1;
 		philos[i].dead = 0;
 		philos[i].nbr_of_meals = 0;
-		philos[i].time_of_last_meal = current_time(); 
+		philos[i].time_of_last_meal = current_time();
 		philos[i].limit_of_life = data->time_to_die;
 		choose_fork(&philos[i], data);
 		philos[i].data = data;
@@ -84,7 +83,7 @@ int	init_philosophers(t_data *data)
 	return (1);
 }
 
-int		init(int argc, char **argv, t_data *data)
+int	init(int argc, char **argv, t_data *data)
 {
 	if (!check_arguments(argc))
 		return (0);

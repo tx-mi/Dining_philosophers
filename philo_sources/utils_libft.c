@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 22:18:48 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 22:18:50 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 22:30:12 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	ft_isdigit(int c)
 
 long	ft_strlen(char *str)
 {
-	char *str_copy;
+	char	*str_copy;
 
 	str_copy = str;
 	while (*str_copy)

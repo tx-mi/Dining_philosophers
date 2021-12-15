@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 22:18:56 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 22:18:57 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 22:30:36 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	check_arguments(int argc)
 		printf("|____________________________________________________|\n");
 		return (0);
 	}
-	return(1);
+	return (1);
 }
 
 long	current_time(void)
@@ -50,7 +50,7 @@ void	ft_usleep(int ms)
 		usleep(ms * 3);
 }
 
-int		count_meals(t_philo *philos)
+int	count_meals(t_philo *philos)
 {
 	int	i;
 	int	nbr_philos;

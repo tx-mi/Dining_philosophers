@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:46:38 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 21:46:39 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 22:30:12 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ void	*monitor(void *philosophers)
 		i = -1;
 		while (++i < nbr_philos)
 		{
-			if (current_time() - philos[i].time_of_last_meal >= philos[i].limit_of_life + 5)
+			if (current_time() - philos[i].time_of_last_meal
+				>= philos[i].limit_of_life + 5)
 			{
 				display_message(&philos[i], TYPE_DIED);
 				i = -1;
@@ -80,7 +81,7 @@ int	run_threads(t_data *data)
 	i = -1;
 	while (++i < philos_nbr)
 		pthread_create(&threads[i], NULL, processing,
-					(void *)&data->philosophers[i]);
+			(void *)&data->philosophers[i]);
 	pthread_create(&monik, NULL, monitor, (void *)data->philosophers);
 	pthread_join(monik, NULL);
 	data->tids = threads;
