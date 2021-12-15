@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   processing.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/15 21:46:38 by mwittenb          #+#    #+#             */
+/*   Updated: 2021/12/15 21:46:39 by mwittenb         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 void	*processing(void *data)
@@ -29,10 +41,11 @@ void	*monitor(void *philosophers)
 	nbr_philos = philos[0].data->nbr_philos;
 	while (1)
 	{
+		usleep(100);
 		i = -1;
 		while (++i < nbr_philos)
 		{
-			if (current_time() - philos[i].time_of_last_meal > philos[i].limit_of_life)
+			if (current_time() - philos[i].time_of_last_meal >= philos[i].limit_of_life + 5)
 			{
 				display_message(&philos[i], TYPE_DIED);
 				i = -1;
