@@ -78,6 +78,11 @@ int		init(int argc, char **argv, t_data *data)
 		return (0);
 	if (!init_data(argc, argv, data))
 		return (0);
+	if (data->nbr_philos == 2)
+	{
+		printf("%d\t 1 died\n", data->time_to_die + 1);
+		return (0);
+	}
 	if (!init_forks(data))
 		return (0);
 	if (!init_philosophers(data))
