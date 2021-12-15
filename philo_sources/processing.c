@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:46:38 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 22:30:12 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 23:17:48 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	*processing(void *data)
 	long	curtime;
 
 	philo = (t_philo *)data;
+	if (philo->id % 2 == 0)
+		usleep(100);
 	curtime = current_time();
 	philo->time_of_last_meal = curtime;
 	philo->start_time = curtime;
@@ -45,9 +47,11 @@ void	*monitor(void *philosophers)
 		i = -1;
 		while (++i < nbr_philos)
 		{
+			pthread_mutex_lock(&philos[i].death_mutex);
 			if (current_time() - philos[i].time_of_last_meal
 				>= philos[i].limit_of_life + 5)
 			{
+				pthread_mutex_unlock(&philos[i].death_mutex);
 				display_message(&philos[i], TYPE_DIED);
 				i = -1;
 				while (++i < nbr_philos)
@@ -57,11 +61,13 @@ void	*monitor(void *philosophers)
 			if (philos[i].data->nbr_of_meals && count_meals(philos))
 			{
 				display_message(&philos[i], TYPE_OVER);
+				pthread_mutex_unlock(&philos[i].death_mutex);
 				i = -1;
 				while (++i < nbr_philos)
 					philos[i].dead = 1;
 				return (NULL);
 			}
+			pthread_mutex_unlock(&philos[i].death_mutex);
 		}
 	}
 	return (NULL);

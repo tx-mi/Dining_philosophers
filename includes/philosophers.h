@@ -30,6 +30,8 @@ typedef struct s_philo
 	pthread_mutex_t	*fork1;
 	pthread_mutex_t	*fork2;
 
+	pthread_mutex_t	death_mutex;
+
 	struct s_data	*data;
 }					t_philo;
 

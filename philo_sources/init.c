@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:46:34 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 22:28:50 by mwittenb         ###   ########.fr       */
+/*   Updated: 2021/12/15 22:37:50 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	init_philosophers(t_data *data)
 
 	i = 0;
 	philos = (t_philo *)malloc(sizeof(t_philo) * data->nbr_philos);
+	pthread_mutex_init(&philos[i].death_mutex, NULL);
 	if (!philos)
 		return (0);
 	while (i < data->nbr_philos)
