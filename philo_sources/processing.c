@@ -33,6 +33,30 @@ void	*processing(void *data)
 	return (NULL);
 }
 
+static int	philos_end(t_philo *philos, int nbr_philos, int i)
+{
+	if (current_time() - philos[i].time_of_last_meal
+		>= philos[i].limit_of_life + 5)
+	{
+		pthread_mutex_unlock(&philos[i].death_mutex);
+		display_message(&philos[i], TYPE_DIED);
+		i = -1;
+		while (++i < nbr_philos)
+			philos[i].dead = 1;
+		return (1);
+	}
+	if (philos[i].data->nbr_of_meals && count_meals(philos))
+	{
+		pthread_mutex_unlock(&philos[i].death_mutex);
+		display_message(&philos[i], TYPE_OVER);
+		i = -1;
+		while (++i < nbr_philos)
+			philos[i].dead = 1;
+		return (1);
+	}
+	return (0);
+}
+
 void	*monitor(void *philosophers)
 {
 	t_philo	*philos;
@@ -47,26 +71,8 @@ void	*monitor(void *philosophers)
 		i = -1;
 		while (++i < nbr_philos)
 		{
-			pthread_mutex_lock(&philos[i].death_mutex);
-			if (current_time() - philos[i].time_of_last_meal
-				>= philos[i].limit_of_life + 5)
-			{
-				pthread_mutex_unlock(&philos[i].death_mutex);
-				display_message(&philos[i], TYPE_DIED);
-				i = -1;
-				while (++i < nbr_philos)
-					philos[i].dead = 1;
+			if (philos_end(philos, nbr_philos, i))
 				return (NULL);
-			}
-			if (philos[i].data->nbr_of_meals && count_meals(philos))
-			{
-				display_message(&philos[i], TYPE_OVER);
-				pthread_mutex_unlock(&philos[i].death_mutex);
-				i = -1;
-				while (++i < nbr_philos)
-					philos[i].dead = 1;
-				return (NULL);
-			}
 			pthread_mutex_unlock(&philos[i].death_mutex);
 		}
 	}
