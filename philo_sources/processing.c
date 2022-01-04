@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:46:38 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 23:17:48 by mwittenb         ###   ########.fr       */
+/*   Updated: 2022/01/04 21:35:38 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	*monitor(void *philosophers)
 		i = -1;
 		while (++i < nbr_philos)
 		{
+			pthread_mutex_lock(&philos[i].death_mutex);
 			if (philos_end(philos, nbr_philos, i))
 				return (NULL);
 			pthread_mutex_unlock(&philos[i].death_mutex);

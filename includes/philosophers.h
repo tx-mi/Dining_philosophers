@@ -52,19 +52,6 @@ typedef struct s_data
 
 
 /*
-**  events.c
-*/
-
-
-void	take_forks(t_philo *philo);
-
-void	eating(t_philo *philo);
-
-void	thinking(t_philo *philo);
-
-void	sleeping(t_philo *philo);
-
-/*
 **  main.c
 */
 
@@ -73,6 +60,18 @@ void	destroy_and_clear(t_data *data);
 void	completion_threads(t_data *data);
 
 void	finish_program(t_data *data);
+
+/*
+**  events.c
+*/
+
+void	take_forks(t_philo *philo);
+
+void	eating(t_philo *philo);
+
+void	thinking(t_philo *philo);
+
+void	sleeping(t_philo *philo);
 
 /*
 **  ft_atoi.c
@@ -123,8 +122,6 @@ int			ft_strncmp(const char *s1, const char *s2, long n);
 int			ft_isdigit(int c);
 
 long		ft_strlen(char *str);
-
-int			check_arguments(int argc);
 
 void		ft_putnbr_fd(int n, int fd);
 
