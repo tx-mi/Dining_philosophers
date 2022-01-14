@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:47:20 by mwittenb          #+#    #+#             */
-/*   Updated: 2021/12/15 23:17:49 by mwittenb         ###   ########.fr       */
+/*   Updated: 2022/01/14 22:46:40 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	eating(t_philo *philo)
 	display_message(philo, TYPE_EAT);
 	philo->time_of_last_meal = current_time();
 	philo->nbr_of_meals++;
+	pthread_mutex_unlock(&philo->death_mutex);
 	ft_usleep(philo->data->time_to_eat);
 	pthread_mutex_unlock(philo->fork2);
 	pthread_mutex_unlock(philo->fork1);
-	pthread_mutex_unlock(&philo->death_mutex);
 }
 
 void	sleeping(t_philo *philo)

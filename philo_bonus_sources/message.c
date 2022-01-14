@@ -6,11 +6,11 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:47:00 by mwittenb          #+#    #+#             */
-/*   Updated: 2022/01/04 21:57:55 by mwittenb         ###   ########.fr       */
+/*   Updated: 2022/01/14 22:57:12 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
 static char	*get_message(int type)
 {
@@ -31,7 +31,7 @@ void	display_message(t_philo *philo, int type)
 {
 	static int	done = 0;
 
-	// pthread_mutex_lock(&philo->data->write_sem); // FIX
+	sem_wait(philo->data->write_sem);
 	if (!done)
 	{
 		ft_putnbr_fd(current_time() - philo->start_time, 1);
@@ -47,5 +47,5 @@ void	display_message(t_philo *philo, int type)
 			write(1, " times\n", 7);
 		}
 	}
-	// pthread_mutex_unlock(&philo->data->write_mutex); // FIX
+	sem_post(philo->data->write_sem);
 }

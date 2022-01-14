@@ -5,40 +5,19 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/15 21:46:38 by mwittenb          #+#    #+#             */
-/*   Updated: 2022/01/14 21:08:43 by mwittenb         ###   ########.fr       */
+/*   Created: 2022/01/14 20:28:54 by mwittenb          #+#    #+#             */
+/*   Updated: 2022/01/14 22:57:14 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
-
-void	*processing(void *data)
-{
-	t_philo	*philo;
-	long	curtime;
-
-	philo = (t_philo *)data;
-	if (philo->id % 2 == 0)
-		usleep(100);
-	curtime = current_time();
-	philo->time_of_last_meal = curtime;
-	philo->start_time = curtime;
-	while (!philo->dead)
-	{
-		take_forks(philo);
-		eating(philo);
-		sleeping(philo);
-		thinking(philo);
-	}
-	return (NULL);
-}
+#include "philosophers_bonus.h"
 
 static int	philos_end(t_philo *philos, int nbr_philos, int i)
 {
 	if (current_time() - philos[i].time_of_last_meal
 		>= philos[i].limit_of_life + 5)
 	{
-		pthread_mutex_unlock(&philos[i].death_mutex);
+		sem_post(philos[i].death_sem);
 		display_message(&philos[i], TYPE_DIED);
 		i = -1;
 		while (++i < nbr_philos)
@@ -47,7 +26,7 @@ static int	philos_end(t_philo *philos, int nbr_philos, int i)
 	}
 	if (philos[i].data->nbr_of_meals && count_meals(philos))
 	{
-		pthread_mutex_unlock(&philos[i].death_mutex);
+		sem_post(philos[i].death_sem);
 		display_message(&philos[i], TYPE_OVER);
 		i = -1;
 		while (++i < nbr_philos)
@@ -71,32 +50,62 @@ void	*monitor(void *philosophers)
 		i = -1;
 		while (++i < nbr_philos)
 		{
-			pthread_mutex_lock(&philos[i].death_mutex);
+			sem_wait(philos[i].death_sem);
 			if (philos_end(philos, nbr_philos, i))
 				return (NULL);
-			pthread_mutex_unlock(&philos[i].death_mutex);
+			sem_post(philos[i].death_sem);
 		}
 	}
 	return (NULL);
 }
 
-int	run_threads(t_data *data)
-{
-	pthread_t	*threads;
-	pthread_t	monik;
-	int			philos_nbr;
-	int			i;
 
-	philos_nbr = data->nbr_philos;
-	threads = (pthread_t *)malloc(sizeof(pthread_t) * philos_nbr);
-	if (!threads)
-		return (0);
-	i = -1;
-	while (++i < philos_nbr)
-		pthread_create(&threads[i], NULL, processing,
-			(void *)&data->philosophers[i]);
-	pthread_create(&monik, NULL, monitor, (void *)data->philosophers);
+
+void	*life_cycle(void *data)
+{
+	pthread_t	monik;
+	t_philo		*philo;
+	long		curtime;
+
+	philo = (t_philo *)data;
+	if (philo->id % 2 == 0)
+		usleep(100);
+	curtime = current_time();
+	philo->time_of_last_meal = curtime;
+	philo->start_time = curtime;
+	if (pthread_create(&monik, NULL, &monitor, philo) != 0)
+		return (NULL);
+	while (!philo->dead)
+	{
+		take_forks(philo);
+		eating(philo);
+		sleeping(philo);
+		thinking(philo);
+	}
 	pthread_join(monik, NULL);
-	data->tids = threads;
-	return (1);
+	return (NULL);
+}
+
+int	start_processes(t_data *data)
+{
+	int			i;
+	void		*philo;
+
+	
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		philo = (void*)(&data->philosophers[i]);
+		data->philosophers[i].pid = fork();
+		if (data->philosophers[i].pid < 0)
+			return (1);
+		else if (data->philosophers[i].pid == 0)
+		{
+			life_cycle(&data->philosophers[i]);
+			exit(0);
+		}
+		usleep(100);
+		i++;
+	}
+	return (0);
 }

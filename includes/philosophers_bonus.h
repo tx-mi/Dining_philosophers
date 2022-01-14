@@ -16,6 +16,10 @@
 # define TYPE_OVER		5
 # define TYPE_DIED		6
 
+# define SEM_FORKS		"/forks"
+# define SEM_DEATH		"/death"
+# define SEM_WRITE		"/write"
+
 struct s_data;
 
 typedef struct s_philo
@@ -27,6 +31,7 @@ typedef struct s_philo
 	time_t			limit_of_life;  // when time_of_last_meal > limit_of_life
 	time_t			start_time;
 
+	pid_t			pid;
 	sem_t			*death_sem;
 
 	struct s_data	*data;
@@ -52,6 +57,16 @@ typedef struct s_data
 */
 
 int			main(int argc, char **argv);
+
+/*
+**  processing.c
+*/
+
+int		start_processes(t_data *data);
+
+void	*life_cycle(void *data);
+
+void	*monitor(void *philosopher);
 
 /*
 **  events.c

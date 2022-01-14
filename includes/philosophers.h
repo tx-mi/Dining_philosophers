@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <semaphore.h>
 # include <pthread.h>
 
 # define TYPE_FORK		1
