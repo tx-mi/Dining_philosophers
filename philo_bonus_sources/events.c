@@ -12,33 +12,28 @@
 
 #include "philosophers_bonus.h"
 
-void	take_forks(t_philo *philo)
+void	take_forks(t_data *data)
 {
-	sem_wait(philo->data->forks);
-	display_message(philo, TYPE_FORK);
-	sem_wait(philo->data->forks);
-	display_message(philo, TYPE_FORK);
-	sem_wait(philo->death_sem);
+	sem_wait(data->forks);
+	display_message(data, TYPE_FORK);
+	sem_wait(data->forks);
+	display_message(data, TYPE_FORK);
+	sem_wait(data->death_sem);
 }
 
-void	eating(t_philo *philo)
+void	eating(t_data *data)
 {
-	display_message(philo, TYPE_EAT);
-	philo->time_of_last_meal = current_time();
-	philo->nbr_of_meals++;
-	sem_post(philo->death_sem);
-	ft_usleep(philo->data->time_to_eat);
-	sem_post(philo->data->forks);
-	sem_post(philo->data->forks);
+	display_message(data, TYPE_EAT);
+	data->time_of_last_meal = current_time();
+	data->nbr_of_meals++;
+	sem_post(data->death_sem);
+	ft_usleep(data->time_to_eat);
+	sem_post(data->forks);
+	sem_post(data->forks);
 }
 
-void	sleeping(t_philo *philo)
+void	sleeping(t_data *data)
 {
-	display_message(philo, TYPE_SLEEP);
-	ft_usleep(philo->data->time_to_sleep);
-}
-
-void	thinking(t_philo *philo)
-{
-	display_message(philo, TYPE_THINK);
+	display_message(data, TYPE_SLEEP);
+	ft_usleep(data->time_to_sleep);
 }

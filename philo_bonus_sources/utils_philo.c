@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_philo.c                                      :+:      :+:    :+:   */
+/*   utils_data.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
 int	check_arguments(int argc)
 {
@@ -19,7 +19,7 @@ int	check_arguments(int argc)
 		printf(" ____________________________________________________ \n");
 		printf("|            Please enter 4 or 5 arguments           |\n");
 		printf("|____________________________________________________|\n");
-		printf("|             [1][Number of philosophers]            |\n");
+		printf("|             [1][Number of datasophers]            |\n");
 		printf("|             [2][Time to die]                       |\n");
 		printf("|             [3][Time to eat]                       |\n");
 		printf("|             [4][Time to sleep]                     |\n");
@@ -50,17 +50,17 @@ void	ft_usleep(int ms)
 		usleep(ms * 3);
 }
 
-int	count_meals(t_philo *philos)
+int	count_meals(t_data *data)
 {
 	int	i;
 	int	nbr_philos;
 
 	i = -1;
-	nbr_philos = philos[0].data->nbr_philos;
+	nbr_philos = data->nbr_philos;
 	while (++i < nbr_philos)
 	{
-		if (philos[i].nbr_of_meals < philos[i].data->nbr_of_meals)
-			return (0);
+		// if (data->nbr_of_meals < data->nbr_of_meals)
+		// 	return (0);
 	}
-	return (1);
+	return (0);
 }

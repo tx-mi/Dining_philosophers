@@ -2,6 +2,15 @@
 
 # define PHILOSOPHERS_BONUS_H
 
+# include <pthread.h>
+# include <sys/time.h>
+# include <semaphore.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -17,38 +26,29 @@
 # define TYPE_DIED		6
 
 # define SEM_FORKS		"/forks"
+# define SEM_SIMULATION	"/simulation"
 # define SEM_DEATH		"/death"
 # define SEM_WRITE		"/write"
 
-struct s_data;
-
-typedef struct s_philo
-{
-	int				id;
-	int				dead;
-	int				nbr_of_meals;  // each time philo eats -> nbr_of_meals++
-	time_t			time_of_last_meal;  // time when philo last eat im ms
-	time_t			limit_of_life;  // when time_of_last_meal > limit_of_life
-	time_t			start_time;
-
-	pid_t			pid;
-	sem_t			*death_sem;
-
-	struct s_data	*data;
-}					t_philo;
-
 typedef struct s_data
 {
+	int				id;
+	pid_t			*pids;
+
 	int				nbr_philos;  // arg1
 	int				time_to_die;  // arg2
 	int				time_to_eat;  // arg3
 	int				time_to_sleep;  // arg4
 	int				nbr_of_meals;  // arg5
+	time_t			time_of_last_meal;  // time when data last eat im ms
+	time_t			start_time;
+	int				dead;
 
 	sem_t			*forks;
+	sem_t			*simulation;
 	sem_t			*write_sem;
+	sem_t			*death_sem;
 
-	t_philo			*philosophers;
 }					t_data;
 
 
@@ -64,21 +64,19 @@ int			main(int argc, char **argv);
 
 int		start_processes(t_data *data);
 
-void	*life_cycle(void *data);
+void	*life_cycle(t_data *data);
 
-void	*monitor(void *philosopher);
+void	*monitor(void *datum);
 
 /*
 **  events.c
 */
 
-void	take_forks(t_philo *philo);
+void	take_forks(t_data *data);
 
-void	eating(t_philo *philo);
+void	eating(t_data *data);
 
-void	thinking(t_philo *philo);
-
-void	sleeping(t_philo *philo);
+void	sleeping(t_data *data);
 
 /*
 **  ft_atoi.c
@@ -92,9 +90,7 @@ int		ft_atoi(const char *str);
 
 int			init_data(int argc, char **argv, t_data *data);
 
-int			init_forks(t_data *data);
-
-int			init_philosophers(t_data *data);
+int			init_semaphores(t_data *data);
 
 int			init(int argc, char **argv, t_data *data);
 
@@ -102,7 +98,7 @@ int			init(int argc, char **argv, t_data *data);
 **  message.c
 */
 
-void		display_message(t_philo *philo, int type);
+void		display_message(t_data *data, int type);
 
 /*
 **  utils_libft.c
@@ -117,7 +113,7 @@ long		ft_strlen(char *str);
 void		ft_putnbr_fd(int n, int fd);
 
 /*
-**  utils_philo.c
+**  utils_data.c
 */
 
 int			check_arguments(int argc);
@@ -126,6 +122,6 @@ long		current_time(void);
 
 void		ft_usleep(int ms);
 
-int			count_meals(t_philo *philos);
+int			count_meals(t_data *data);
 
 #endif

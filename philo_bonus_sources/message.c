@@ -27,25 +27,25 @@ static char	*get_message(int type)
 	return (" died\n");
 }
 
-void	display_message(t_philo *philo, int type)
+void	display_message(t_data *data, int type)
 {
 	static int	done = 0;
 
-	sem_wait(philo->data->write_sem);
+	sem_wait(data->write_sem);
 	if (!done)
 	{
-		ft_putnbr_fd(current_time() - philo->start_time, 1);
+		ft_putnbr_fd(current_time() - data->start_time, 1);
 		write(1, "\t", 1);
 		if (type != TYPE_OVER)
-			ft_putnbr_fd(philo->id, 1);
+			ft_putnbr_fd(data->id, 1);
 		if (type == TYPE_DIED || type == TYPE_OVER)
 			done = 1;
 		write(1, get_message(type), ft_strlen(get_message(type)));
 		if (type == TYPE_OVER)
 		{
-			ft_putnbr_fd(philo->data->nbr_of_meals, 1);
+			ft_putnbr_fd(data->nbr_of_meals, 1);
 			write(1, " times\n", 7);
 		}
 	}
-	sem_post(philo->data->write_sem);
+	sem_post(data->write_sem);
 }

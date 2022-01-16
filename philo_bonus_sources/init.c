@@ -20,46 +20,26 @@ int	init_data(int argc, char **argv, t_data *data)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
+	data->dead = 0;
 	if (argc == 6)
 		data->nbr_of_meals = ft_atoi(argv[5]);
 	else
 		data->nbr_of_meals = 0;
-	sem_unlink(SEM_WRITE);
-	data->write_sem = sem_open(SEM_WRITE, O_CREAT, 0777, 1);
 	return (1);
 }
 
-int	init_forks(t_data *data)
+int	init_semaphores(t_data *data)
 {
 	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_SIMULATION);
+	sem_unlink(SEM_WRITE);
+	sem_unlink(SEM_DEATH);
 	data->forks = sem_open(SEM_FORKS, O_CREAT, 0777, data->nbr_philos);
+	data->simulation = sem_open(SEM_SIMULATION, O_CREAT, 0777, 0);
+	data->death_sem = sem_open(SEM_DEATH, O_CREAT, 0777, 1);
+	data->write_sem = sem_open(SEM_WRITE, O_CREAT, 0777, 1);
 	if (data->forks == SEM_FAILED)
 		return (0);
-	return (1);
-}
-
-int	init_philosophers(t_data *data)
-{
-	t_philo	*philos;
-	int		i;
-
-	i = 0;
-	philos = (t_philo *)malloc(sizeof(t_philo) * data->nbr_philos);
-	if (!philos)
-		return (0);
-	sem_unlink(SEM_DEATH);
-	while (i < data->nbr_philos)
-	{
-		philos[i].id = i + 1;
-		philos[i].dead = 0;
-		philos[i].nbr_of_meals = 0;
-		philos[i].time_of_last_meal = current_time();
-		philos[i].limit_of_life = data->time_to_die;
-		philos[i].data = data;
-		philos[i].death_sem = sem_open(SEM_DEATH, O_CREAT, 0777, 1);
-		i++;
-	}
-	data->philosophers = philos;
 	return (1);
 }
 
@@ -74,13 +54,9 @@ int	init(int argc, char **argv, t_data *data)
 		printf("0\t 1 has taken a fork\n");
 		ft_usleep(data->time_to_die);
 		printf("%d\t 1 died\n", data->time_to_die + 1);
-		sem_unlink(SEM_WRITE);
-		sem_close(data->write_sem);
 		return (0);
 	}
-	if (!init_forks(data))
-		return (0);
-	if (!init_philosophers(data))
+	if (!init_semaphores(data))
 		return (0);
 	return (1);
 }

@@ -12,75 +12,69 @@
 
 #include "philosophers_bonus.h"
 
-static int	philos_end(t_philo *philos, int nbr_philos, int i)
+static int	is_philo_end(t_data *data)
 {
-	if (current_time() - philos[i].time_of_last_meal
-		>= philos[i].limit_of_life + 5)
+	if (current_time() - data->time_of_last_meal
+		>= data->time_to_die + 5)
 	{
-		sem_post(philos[i].death_sem);
-		display_message(&philos[i], TYPE_DIED);
-		i = -1;
-		while (++i < nbr_philos)
-			philos[i].dead = 1;
-		return (1);
+		sem_post(data->death_sem);
+		sem_post(data->simulation);
+		display_message(data, TYPE_DIED);
+		data->dead = 1;
+		exit(0);
 	}
-	if (philos[i].data->nbr_of_meals && count_meals(philos))
+	if (data->nbr_of_meals && count_meals(data))
 	{
-		sem_post(philos[i].death_sem);
-		display_message(&philos[i], TYPE_OVER);
-		i = -1;
-		while (++i < nbr_philos)
-			philos[i].dead = 1;
-		return (1);
+		sem_post(data->death_sem);
+		sem_post(data->simulation);
+		display_message(data, TYPE_OVER);
+		data->dead = 1;
+		exit(0);
 	}
 	return (0);
 }
 
-void	*monitor(void *philosophers)
+void	*monitor(void *datum)
 {
-	t_philo	*philos;
+	t_data	*data;
 	int		i;
 	int		nbr_philos;
 
-	philos = (t_philo *)philosophers;
-	nbr_philos = philos[0].data->nbr_philos;
+	data = (t_data *)datum;
+	nbr_philos = data->nbr_philos;
 	while (1)
 	{
 		usleep(100);
 		i = -1;
 		while (++i < nbr_philos)
 		{
-			sem_wait(philos[i].death_sem);
-			if (philos_end(philos, nbr_philos, i))
+			sem_wait(data->death_sem);
+			if (is_philo_end(data))
 				return (NULL);
-			sem_post(philos[i].death_sem);
+			sem_post(data->death_sem);
 		}
 	}
 	return (NULL);
 }
 
-
-
-void	*life_cycle(void *data)
+void	*life_cycle(t_data *data)
 {
 	pthread_t	monik;
-	t_philo		*philo;
 	long		curtime;
 
-	philo = (t_philo *)data;
-	if (philo->id % 2 == 0)
+	if (data->id % 2 == 0)
 		usleep(100);
 	curtime = current_time();
-	philo->time_of_last_meal = curtime;
-	philo->start_time = curtime;
-	if (pthread_create(&monik, NULL, &monitor, philo) != 0)
-		return (NULL);
-	while (!philo->dead)
+	data->time_of_last_meal = curtime;
+	data->start_time = curtime;
+	if (pthread_create(&monik, NULL, &monitor, data) != 0)
+		exit(1);
+	while (!data->dead)
 	{
-		take_forks(philo);
-		eating(philo);
-		sleeping(philo);
-		thinking(philo);
+		take_forks(data);
+		eating(data);
+		sleeping(data);
+		display_message(data, TYPE_THINK);
 	}
 	pthread_join(monik, NULL);
 	return (NULL);
@@ -89,23 +83,29 @@ void	*life_cycle(void *data)
 int	start_processes(t_data *data)
 {
 	int			i;
-	void		*philo;
-
+	int			var;
 	
-	i = 0;
-	while (i < data->nbr_philos)
+	i = -1;
+	data->pids = (pid_t *)malloc(sizeof(pid_t) * data->nbr_philos);
+	while (++i < data->nbr_philos)
 	{
-		philo = (void*)(&data->philosophers[i]);
-		data->philosophers[i].pid = fork();
-		if (data->philosophers[i].pid < 0)
+		data->pids[i] = fork();
+		if (data->pids[i] < 0)
 			return (1);
-		else if (data->philosophers[i].pid == 0)
+		else if (data->pids[i] == 0)
 		{
-			life_cycle(&data->philosophers[i]);
+			data->id = i + 1;
+			life_cycle(data);
 			exit(0);
 		}
 		usleep(100);
-		i++;
+	}
+	waitpid(-1, &var, 0);
+	i = 0;
+	if (var == 0)
+	{
+		while (i < data->nbr_philos)
+			kill(data->pids[i++], SIGTERM);
 	}
 	return (0);
 }
