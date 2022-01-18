@@ -6,7 +6,7 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:18:52 by mwittenb          #+#    #+#             */
-/*   Updated: 2022/01/14 22:51:23 by mwittenb         ###   ########.fr       */
+/*   Updated: 2022/01/18 21:18:48 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int main(int argc, char **argv)
 
 	if (!init(argc, argv, &data))
 		return (-1);
+	// if (!start_count_monitor(&data))
+	// 	return (-1);
 	if (!start_processes(&data))
 		return (-1);
 	sem_wait(data.simulation);
@@ -29,4 +31,5 @@ int main(int argc, char **argv)
 	sem_close(data.death_sem);
 	sem_close(data.forks);
 	sem_close(data.write_sem);
+	exit(0);
 }

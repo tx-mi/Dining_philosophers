@@ -29,6 +29,7 @@
 # define SEM_SIMULATION	"/simulation"
 # define SEM_DEATH		"/death"
 # define SEM_WRITE		"/write"
+# define SEM_EAT		"/eat"
 
 typedef struct s_data
 {
@@ -40,6 +41,7 @@ typedef struct s_data
 	int				time_to_eat;  // arg3
 	int				time_to_sleep;  // arg4
 	int				nbr_of_meals;  // arg5
+	int				meals;
 	time_t			time_of_last_meal;  // time when data last eat im ms
 	time_t			start_time;
 	int				dead;
@@ -48,6 +50,7 @@ typedef struct s_data
 	sem_t			*simulation;
 	sem_t			*write_sem;
 	sem_t			*death_sem;
+	sem_t			*eat_sem;
 
 }					t_data;
 
@@ -62,11 +65,14 @@ int			main(int argc, char **argv);
 **  processing.c
 */
 
+int		start_count_monitor(t_data *data);
+
 int		start_processes(t_data *data);
 
 void	*life_cycle(t_data *data);
 
 void	*monitor(void *datum);
+
 
 /*
 **  events.c
@@ -122,6 +128,7 @@ long		current_time(void);
 
 void		ft_usleep(int ms);
 
-int			count_meals(t_data *data);
+void		*monitor_count(void *datum);
+
 
 #endif

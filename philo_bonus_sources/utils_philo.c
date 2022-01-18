@@ -50,17 +50,20 @@ void	ft_usleep(int ms)
 		usleep(ms * 3);
 }
 
-int	count_meals(t_data *data)
+void	*monitor_count(void *datum)
 {
-	int	i;
-	int	nbr_philos;
+	t_data	*data;
+	int		total;
 
-	i = -1;
-	nbr_philos = data->nbr_philos;
-	while (++i < nbr_philos)
+	data = (t_data*)datum;
+	total = 0;
+	while (total < data->nbr_of_meals * data->nbr_philos)
 	{
-		// if (data->nbr_of_meals < data->nbr_of_meals)
-		// 	return (0);
+		sem_wait(data->eat_sem);
+		total++;
 	}
-	return (0);
+	display_message(data, TYPE_OVER);
+	// sem_post(data->simulation);
+	// sem_wait(data->write_sem);
+	return (NULL);
 }

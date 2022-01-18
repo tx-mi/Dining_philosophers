@@ -6,30 +6,46 @@
 /*   By: mwittenb <mwittenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 20:28:54 by mwittenb          #+#    #+#             */
-/*   Updated: 2022/01/14 22:57:14 by mwittenb         ###   ########.fr       */
+/*   Updated: 2022/01/18 21:16:0 by mwittenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers_bonus.h"
+
+int	start_count_monitor(t_data *data)
+{
+	pthread_t	tid;
+
+	if (data->nbr_of_meals > 0)
+	{
+		if (pthread_create(&tid, NULL, &monitor_count, (void *)data) != 0)
+			return (0);
+		pthread_detach(tid);
+	}
+	return (1);
+}
 
 static int	is_philo_end(t_data *data)
 {
 	if (current_time() - data->time_of_last_meal
 		>= data->time_to_die + 5)
 	{
-		sem_post(data->death_sem);
-		sem_post(data->simulation);
 		display_message(data, TYPE_DIED);
+		sem_wait(data->write_sem);
+		sem_post(data->simulation);
 		data->dead = 1;
+		sem_post(data->death_sem);
 		exit(0);
 	}
-	if (data->nbr_of_meals && count_meals(data))
+	if (data->nbr_of_meals)
 	{
-		sem_post(data->death_sem);
-		sem_post(data->simulation);
-		display_message(data, TYPE_OVER);
-		data->dead = 1;
-		exit(0);
+		if (data->meals >= data->nbr_of_meals)
+		{
+			data->dead = 1;
+			sem_post(data->simulation);
+			sem_post(data->death_sem);
+			return (1);
+		}
 	}
 	return (0);
 }
@@ -91,7 +107,7 @@ int	start_processes(t_data *data)
 	{
 		data->pids[i] = fork();
 		if (data->pids[i] < 0)
-			return (1);
+			return (0);
 		else if (data->pids[i] == 0)
 		{
 			data->id = i + 1;
@@ -107,5 +123,5 @@ int	start_processes(t_data *data)
 		while (i < data->nbr_philos)
 			kill(data->pids[i++], SIGTERM);
 	}
-	return (0);
+	return (1);
 }
